@@ -1,5 +1,3 @@
-(R=W, V=3)
-
 # Plex Ratings Exporter
 
 Plex Ratings Exporter is a tool designed to export ratings from your Plex server library into a CSV file and/or directly to MusicBrainz.
