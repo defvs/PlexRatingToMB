@@ -2,10 +2,12 @@ plugins {
     kotlin("jvm") version "2.0.0"
     application
     kotlin("plugin.serialization") version "2.0.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
+
 }
 
 group = "dev.defvs"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -21,7 +23,6 @@ dependencies {
     implementation("org.http4k:http4k-format-kotlinx-serialization")
     implementation("org.http4k:http4k-security-digest")
 
-
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
 
     implementation("me.tongfei", "progressbar", "0.10.0")
@@ -32,9 +33,14 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(17)
 }
 
 application {
     mainClass.set("MainKt")
+}
+
+tasks.shadowJar {
+    archiveBaseName = "PlexRatingToMB"
+    archiveClassifier = ""
 }
