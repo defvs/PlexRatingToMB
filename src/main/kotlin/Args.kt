@@ -25,12 +25,12 @@ class Args(parser: ArgParser) {
     val mbUsername by parser.storing(
         "--mbusername",
         help = "MusicBrainz Username"
-    )
+    ).optional()
 
     val mbPassword by parser.storing(
         "--mbpassword",
         help = "MusicBrainz Password"
-    )
+    ).optional()
 }
 
 class Options(
