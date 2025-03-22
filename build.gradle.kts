@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.20"
     application
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.20"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 
 }
@@ -16,7 +16,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
 
-    implementation(platform("org.http4k:http4k-bom:5.25.0.0"))
+    implementation(platform("org.http4k:http4k-bom:6.2.0.0"))
     implementation("org.http4k:http4k-core")
     implementation("org.http4k:http4k-server-undertow")
     implementation("org.http4k:http4k-client-apache")
@@ -25,7 +25,7 @@ dependencies {
 
     implementation("com.xenomachina:kotlin-argparser:2.0.7")
 
-    implementation("me.tongfei", "progressbar", "0.10.0")
+    implementation("me.tongfei", "progressbar", "0.10.1")
 }
 
 tasks.test {
