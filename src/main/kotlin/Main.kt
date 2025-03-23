@@ -5,7 +5,9 @@ import org.http4k.core.Status
 import plex.PlexClient
 import plex.api.LibraryTypes
 import plex.api.TrackResponse
+import subsonic.SubsonicClient
 import java.io.File
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 data class Track(
@@ -19,15 +21,19 @@ data class Track(
 fun main(args: Array<String>) {
     val args1 = ArgParser(args).parseInto(::Args)
     val options = Options(
-        args1.baseUrl ?: askUser("Plex server URL: "),
-        args1.plexToken ?: askUser("Your X-Plex-Token: "),
-        args1.outputFile,
-        args1.mbUsername,
-        args1.mbPassword,
+        baseUrl = args1.baseUrl ?: askUser("Plex server URL: "),
+        plexToken = args1.plexToken ?: askUser("Your X-Plex-Token: "),
+        outputFile = args1.outputFile,
+        mbUsername = args1.mbUsername,
+        mbPassword = args1.mbPassword,
+        libraryId = args1.libraryId,
+        subsonicUrl = args1.subsonicUrl,
+        subsonicToken = args1.subsonicToken,
     )
 
     runPlex(options)
         .also { runMusicBrainz(options, it) }
+        .also { runSubsonic(options, it) }
 }
 
 fun runPlex(options: Options): List<Track> {
@@ -126,6 +132,23 @@ fun runMusicBrainz(options: Options, tracks: List<Track>) {
                 else -> println("An error has occured while submitting track ratings: $it")
             }
         }
+}
+
+fun runSubsonic(options: Options, tracks: List<Track>) {
+    if (options.subsonicUrl.isNullOrBlank() || options.subsonicToken.isNullOrBlank())
+        println("No Subsonic URL or key passed, skipping (pass with --subsonicurl and --subsonictoken).").also { return }
+
+    val client = SubsonicClient(options.subsonicUrl!!, options.subsonicToken!!)
+    val ratings = client.getAllTracks().filter { it.musicBrainzId != null }.mapNotNull { subsonicTracks ->
+        tracks.firstOrNull { track -> track.userRating != null && track.trackMbid == subsonicTracks.musicBrainzId }?.let {
+            val rating = ceil(it.userRating!!.div(2)).roundToInt().coerceIn(0..5)
+            subsonicTracks.id to rating
+        }
+    }.toMap()
+
+    println("Total matching tracks: ${ratings.size}")
+
+    client.submitRatings(ratings)
 }
 
 fun askUser(question: String): String {

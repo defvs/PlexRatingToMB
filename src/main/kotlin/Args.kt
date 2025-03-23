@@ -31,6 +31,16 @@ class Args(parser: ArgParser) {
         "--mbpassword",
         help = "MusicBrainz Password"
     ).optional()
+
+    val subsonicUrl by parser.storing(
+        "--subsonicurl",
+        help = "Subsonic-compatible server URL"
+    ).optional()
+
+    val subsonicToken by parser.storing(
+        "--subsonictoken",
+        help = "Subsonic API Token"
+    ).optional()
 }
 
 class Options(
@@ -40,4 +50,6 @@ class Options(
     val mbUsername: String?,
     val mbPassword: String?,
     var libraryId: String? = null,
+    var subsonicUrl: String? = null,
+    var subsonicToken: String? = null,
 )
